@@ -1,10 +1,20 @@
-# EP3-logica-de-programacao
+# ep3
 
-A Clojure library designed to ... well, that part is up to you.
+## Credits
+Matheus de Oliveira Andrade 10333192
+Felipe Kenzo Shiraihsi 10262700
 
-## Usage
+## Running
 
-FIXME
+```
+lein run resources/alternate-acceptor.dfa resources/alternate-tape.tap
+```
+
+## Examples options:
+
+- alternate-acceptor.dfa
+
+- esources/alternate-tape.tap
 
 ## License
 
