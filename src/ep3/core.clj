@@ -1,6 +1,21 @@
 (ns ep3.core (:gen-class))
+(require '[ep3.automata :as automata])
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn -main
+  "Starting point."
+  ([automata-path, tape-path, debug-option]
+    (
+      println "debug mode"
+    )
+  )
+  ([automata-path, tape-path]
+    (
+      ;; (def fileExtension (last (str/split automata-path #"\.")))
+      ;; (if (= fileExtension "dfa")
+      ;;   (simulator/DFA parsedAutomata)
+      ;;   (simulator/NFA parsedAutomata)
+      ;; )
+      println (automata/getAutomataDefinition automata-path)
+    )
+  )
+)
