@@ -1,12 +1,21 @@
 (ns ep3.core (:gen-class))
 (require '[ep3.automata :as automata])
 (require '[ep3.tape :as tape])
+(require '[ep3.computationStructure :as cs])
 
 (defn -main
   "Starting point."
   ([automata-path, tape-path, debug-option]
-    (
-      println "debug mode"
+    (loop [
+      tape (tape/initTape tape-path)
+      automata (automata/getAutomataDefinition automata-path)
+    ]
+      (println "Estrutura de computação:" (cs/init automata tape))
+      (println "Leitura do cabeçote:" (tape/readTape tape) "\n")
+      (if (= (tape/readTape tape) "$")
+        true
+        (recur (tape/configTape tape) automata)
+      )
     )
   )
   ([automata-path, tape-path]
@@ -15,13 +24,13 @@
       ;;   (simulator/DFA parsedAutomata)
       ;;   (simulator/NFA parsedAutomata)
       ;; )
-    (println (automata/getAutomataDefinition automata-path) "\n")
-    (loop [tape (tape/initTape tape-path)]
-      (println "Fita: " tape)
-      (println "Leitura do cabeçote:" (tape/readTape tape) "\n")
+    (loop [
+      tape (tape/initTape tape-path)
+      automata (automata/getAutomataDefinition automata-path)
+    ]
       (if (= (tape/readTape tape) "$")
         true
-        (recur (tape/configTape tape))
+        (recur (tape/configTape tape) automata)
       )
     )
   )
