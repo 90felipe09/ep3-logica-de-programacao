@@ -22,7 +22,7 @@
   )
 )
 
-(defn simulate
+(defn simulate-debug
   "executes simulation given an automata, a tape and a step function and returns true or false if automata accepts tape"
   [automata tape step]
   (loop [computation-state (cs/init automata tape)]
@@ -36,25 +36,33 @@
   )
 )
 
+(defn simulate
+  "executes simulation given an automata, a tape and a step function and returns true or false if automata accepts tape"
+  [automata tape step]
+  (loop [computation-state (cs/init automata tape)]
+      (if (= (cs/readTape computation-state) "$")
+        (accepts? computation-state automata)
+        (recur (step computation-state))
+      )
+  )
+)
+
 (defn -main
   "Starting point."
   ([automata-path, tape-path, debug-option]
     (def automata (automata/getAutomataDefinition automata-path))
     (println "\nInput Automata:" automata "\n")
     (def tape (tape/initTape tape-path))
+    (println "\nInput Tape:" tape "\n")
     (def step (applyProperSimulator automata-path))
-    (println (simulate automata tape step))
+    (println (simulate-debug automata tape step))
   )
   ([automata-path, tape-path]
-
-    (loop [
-      tape (tape/initTape tape-path)
-      automata (automata/getAutomataDefinition automata-path)
-    ]
-      (if (= (tape/readTape tape) "$")
-        true
-        (recur (tape/configTape tape) automata)
-      )
-    )
+    (def automata (automata/getAutomataDefinition automata-path))
+    (println "\nInput Automata:" automata "\n")
+    (def tape (tape/initTape tape-path))
+    (println "\nInput Tape:" tape "\n")
+    (def step (applyProperSimulator automata-path))
+    (println (simulate automata tape step))
   )
 )
