@@ -9,3 +9,15 @@
         :F (last tape)
     }   
 )
+
+(defn readTape
+    "Returns symbol on head tape from a computation structure"
+    [computation-structure]
+    (first (computation-structure :F))
+)
+
+(defn reconfigTape
+    "Returns forwarded tape from a computation structure"
+    [computation-structure]
+    (drop 1 (computation-structure :F))
+)
