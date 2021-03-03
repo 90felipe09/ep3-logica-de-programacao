@@ -5,7 +5,8 @@
   "Creates a automata set from raw input"
   [rawAutomata]
   (
-    let [[Q S T q F] (vals (json/read-str rawAutomata))]
+    let [{Q "Q" S "S" T "T" q "q" F "F"} (json/read-str rawAutomata)]
+    (println (json/read-str rawAutomata))
     {
       :transition T
       :initialState q
