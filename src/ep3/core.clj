@@ -3,9 +3,10 @@
 (require '[ep3.tape :as tape])
 (require '[ep3.computationStructure :as cs])
 (require '[ep3.dfa :as dfa])
+(require '[ep3.nfa :as nfa])
 (require '[clojure.string :as str])
 
-(defn accepts?
+(defn accepts? ;; tem que mudar isso aqui porque pras nfa n funfa
     "returns true or false by checking if the state of a computing state matches
     one of the accepted states from the automata tuple definition"
     [computing-state automata]
@@ -47,7 +48,7 @@
   )
 )
 
-(defn -main
+(defn old-main
   "Starting point."
   ([automata-path, tape-path, debug-option]
     (let [automata (automata/getAutomataDefinition automata-path)
@@ -67,3 +68,14 @@
     )
   )
 )
+
+(defn main
+  "Entry point"
+  ([automata-path tape-path debug-option]
+    (let [automata (automata/getAutomataDefinition automata-path)
+          tape (tape/initTape tape-path)
+          step #(nfa/step)
+          debug? (not= debug-option false)]
+      (println (str "\nInput Automata:"))))
+    ([automata-path tape-path]
+      (-main automata-path tape-path false)))
