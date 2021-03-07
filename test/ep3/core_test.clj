@@ -90,5 +90,6 @@
   (testing "check successful simulation"
   (let [machine (fsmParser/parse-automata "resources/machines/test-machine.nfa")
         tape (slurp "resources/tapes/nfa-test-tape.tap")]
-    (is (= true (nfa/run-nfa machine tape))))))
+    (is (= true (nfa/run-nfa machine tape)))
+    (is (= false (nfa/run-nfa machine (str tape "1")))))))
 

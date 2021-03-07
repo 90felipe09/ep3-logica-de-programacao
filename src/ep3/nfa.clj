@@ -77,8 +77,9 @@
   [machine tape]
   (let [initial-computation {:E [(machine :q)] :T (machine :T) :F tape}
         final-states (machine :F)]
-    (loop [computation-list initial-computation]
+    (loop [computation-list [initial-computation]]
       (let [next-computation-list (step computation-list)]
+        (println next-computation-list)
         (if (exists-valid-final-computation? next-computation-list final-states)
           true
         ;else
