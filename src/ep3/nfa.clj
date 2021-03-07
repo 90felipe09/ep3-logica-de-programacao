@@ -1,5 +1,6 @@
 (ns ep3.nfa (:gen-class))
 (require '[ep3.computationStructure :as cs])
+(require '[ep3.tape :as tape])
 
 (defn get-transition-key
   "Returns the first element (the key) of a transition"
@@ -22,18 +23,19 @@
   [computing-state]
   (let [ { states :E
            transitions :T
-           tape :F } computing-state ]
+           tape :F } computing-state]
     (for [state states
-          valid-transition (filter-valid-transitions (transitions state) (subs tape 0 1))]
+          valid-transition (filter-valid-transitions (transitions state) (tape/read-tape tape))]
       { :E (second valid-transition)
         :T transitions
-        :F (if (is-epsilon-transition? valid-transition) tape (subs tape 1)) })))
+        :F (if (is-epsilon-transition? valid-transition) tape (tape/config-tape tape)) })))
 
 (defn step
   "Returns the set of possible next computations based on an
   initial set of computations with a non-deterministic transition function"
   [computing-state-list]
-  (first (concat (map #(get-next-computations %) computing-state-list))))
+  (let [result (concat (map #(get-next-computations %) computing-state-list))]
+  (flatten result)))
 
 (defn is-tape-empty?
   "Returns whether the received tape is empty or not"
@@ -79,7 +81,7 @@
         final-states (machine :F)]
     (loop [computation-list [initial-computation]]
       (let [next-computation-list (step computation-list)]
-        (println next-computation-list)
+        (println (map (fn [item] {:E (:E item) :F (:F item)}) next-computation-list))
         (if (exists-valid-final-computation? next-computation-list final-states)
           true
         ;else

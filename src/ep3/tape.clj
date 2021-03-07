@@ -19,3 +19,17 @@
   [tape]
   [(conj (first tape) (readTape tape)) (drop 1 (last tape))]
 )
+
+(defn read-tape
+  [tape]
+  (if (> (count tape) 0)
+    (subs tape 0 1)
+  ;else
+    tape))
+
+(defn config-tape
+  [tape]
+  (if (> (count tape) 0)
+    (subs tape 1)
+  ;else
+    tape))

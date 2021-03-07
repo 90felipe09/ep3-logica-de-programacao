@@ -35,7 +35,7 @@
         tape (slurp "resources/tapes/nfa-test-tape.tap")
         initial-computation {:E [(machine :q)] :T (machine :T) :F tape}
         resulting-computations (nfa/get-next-computations initial-computation)]
-    (is (= '(["A"]) (map #(:E %) resulting-computations))))))
+    (is (= '(["A"]["B"]) (map #(:E %) resulting-computations))))))
 
 (deftest two-step-test
   (testing "nfa step chaining"
@@ -91,5 +91,5 @@
   (let [machine (fsmParser/parse-automata "resources/machines/test-machine.nfa")
         tape (slurp "resources/tapes/nfa-test-tape.tap")]
     (is (= true (nfa/run-nfa machine tape)))
-    (is (= false (nfa/run-nfa machine (str tape "1")))))))
+    (is (= true (nfa/run-nfa machine (str tape "1")))))))
 
