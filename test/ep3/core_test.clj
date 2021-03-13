@@ -1,6 +1,7 @@
 (ns ep3.core-test (:gen-class))
 (require '[clojure.test :refer :all])
 (require '[ep3.nfa :as nfa])
+(require '[ep3.dfa :as dfa])
 (require '[ep3.automataParser :as fsmParser])
 (require '[ep3.computationStructure :as cs])
 (require '[ep3.tape :as tape])
@@ -49,8 +50,8 @@
   (testing "check computation for empty tape"
   (let [non-empty-tape "001"
         empty-tape ""]
-    (is (= true (nfa/is-tape-empty? empty-tape)))
-    (is (= false (nfa/is-tape-empty? non-empty-tape))))))
+    (is (= true (tape/is-tape-empty? empty-tape)))
+    (is (= false (tape/is-tape-empty? non-empty-tape))))))
 
 (deftest exists-only-final-computation-test
   (testing "check computation list for finality"
@@ -58,8 +59,8 @@
                                     {:E nil :T nil :F "0"}]
         final-computation-list [{:E nil :T nil :F ""}
                                 {:E nil :T nil :F ""}] ]
-    (is (= true (nfa/exists-only-final-computations? final-computation-list)))
-    (is (= false (nfa/exists-only-final-computations? non-final-computation-list))))))
+    (is (= true (cs/exists-only-final-computations? final-computation-list)))
+    (is (= false (cs/exists-only-final-computations? non-final-computation-list))))))
 
 (deftest is-valid-final-computation-test
   (testing "check computation for validity and finality"
@@ -68,10 +69,10 @@
         non-final-valid-comp {:E ["B"] :T nil :F "0"}
         final-non-valid-comp {:E ["A"] :T nil :F ""}
         final-valid-comp {:E ["B"] :T nil :F ""}]
-    (is (= false (nfa/is-valid-final-computation? non-final-non-valid-comp final-states)))
-    (is (= true (nfa/is-valid-final-computation? final-valid-comp final-states)))
-    (is (= false (nfa/is-valid-final-computation? final-non-valid-comp final-states)))
-    (is (= false (nfa/is-valid-final-computation? non-final-valid-comp final-states))))))
+    (is (= false (cs/is-valid-final-computation? non-final-non-valid-comp final-states)))
+    (is (= true (cs/is-valid-final-computation? final-valid-comp final-states)))
+    (is (= false (cs/is-valid-final-computation? final-non-valid-comp final-states)))
+    (is (= false (cs/is-valid-final-computation? non-final-valid-comp final-states))))))
 
 (deftest exists-valid-final-computation-test
   (testing "check computation list for a state with finality and validity"
@@ -83,13 +84,19 @@
                                 {:E ["B"] :T nil :F "0"}
                                 {:E ["B"] :T nil :F ""}
                                 {:E ["A"] :T nil :F "0"}] ]
-    (is (= true (nfa/exists-valid-final-computation? final-computation-list final-states)))
-    (is (= false (nfa/exists-valid-final-computation? non-final-computation-list final-states))))))
+    (is (= true (cs/exists-valid-final-computation? final-computation-list final-states)))
+    (is (= false (cs/exists-valid-final-computation? non-final-computation-list final-states))))))
 
 (deftest run-nfa-test
-  (testing "check successful simulation"
+  (testing "check successful nfa simulation"
   (let [machine (fsmParser/parse-automata "resources/machines/test-machine.nfa")
         tape (slurp "resources/tapes/nfa-test-tape.tap")]
     (is (= true (nfa/run-nfa machine tape)))
     (is (= true (nfa/run-nfa machine (str tape "1")))))))
+
+(deftest run-dfa-test
+  (testing "check successful dfa simulation"
+  (let [machine (fsmParser/parse-automata "resources/machines/alternate-acceptor.dfa")
+        tape (slurp "resources/tapes/alternate-tape.tap")]
+    (is (= true (dfa/run-dfa machine tape))))))
 

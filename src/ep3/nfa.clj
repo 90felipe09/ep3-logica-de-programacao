@@ -34,58 +34,26 @@
   "Returns the set of possible next computations based on an
   initial set of computations with a non-deterministic transition function"
   [computing-state-list]
-  (let [result (concat (map #(get-next-computations %) computing-state-list))]
-  (flatten result)))
-
-(defn is-tape-empty?
-  "Returns whether the received tape is empty or not"
-  [tape]
-  (= (count tape) 0))
-
-(defn exists-only-final-computations?
-  "Returns whether the supplied computation list only has final computations (empty tape)"
-  [reached-computation-list]
-  (reduce
-    (fn [acc computation]
-      (if (is-tape-empty? (computation :F))
-        acc
-      ;else
-        (reduced false)))
-    true ;initial acc
-    reached-computation-list))
-
-(defn is-valid-final-computation?
-  "Returns whether a given computation's state list has a valid final state"
-  [computation final-states]
-  (let [ { states :E
-           transitions :T
-           tape :F } computation ]
-    (and (is-tape-empty? tape) (not= nil (some (set final-states) states)))))
-
-(defn exists-valid-final-computation?
-  "Returns whether the supplied computation list has at least one valid final computation"
-  [reached-computation-list final-states]
-  (reduce 
-    (fn [acc computation]
-      (if (is-valid-final-computation? computation final-states)
-        (reduced true)
-      ;else
-        acc))
-    false ;initial acc
-    reached-computation-list))
+  (flatten (concat (map #(get-next-computations %) computing-state-list))))
 
 (defn run-nfa
-  ""
-  [machine tape]
-  (let [initial-computation {:E [(machine :q)] :T (machine :T) :F tape}
-        final-states (machine :F)]
-    (loop [computation-list [initial-computation]]
+  "Returns wether the string in the tape is accepted by
+  the machine supplied in hashmap representation"
+  ([machine tape debug?]
+  (let [final-states (machine :F)]
+    (loop [computation-list [{:E [(machine :q)] :T (machine :T) :F tape}]]
+      (if debug? (println (map #(select-keys % [:E :F]) computation-list)))
       (let [next-computation-list (step computation-list)]
-        (println (map (fn [item] {:E (:E item) :F (:F item)}) next-computation-list))
-        (if (exists-valid-final-computation? next-computation-list final-states)
-          true
+        (if (cs/exists-valid-final-computation? next-computation-list final-states)
+          (do
+            (if debug? (println (map #(select-keys % [:E :F]) next-computation-list)))
+            true)
         ;else
-          (if (exists-only-final-computations? next-computation-list)
-            false
+          (if (cs/exists-only-final-computations? next-computation-list)
+            (do
+              (if debug? (println (map #(select-keys % [:E :F]) next-computation-list)))
+              false)
           ;else
             (recur next-computation-list)))))))
+  ([machine tape]
+    (run-nfa machine tape false)))
